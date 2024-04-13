@@ -7,7 +7,7 @@ NodeCameraStream::NodeCameraStream(int id, int& currentPinId) : Node(NodeType::C
     cameraId = 0;
     outputPins[0].type = PinType::Image3;
 
-    cap = new cv::VideoCapture(cameraId);
+    cap = new cv::VideoCapture(cameraId, cv::CAP_DSHOW);
 }
 
 void NodeCameraStream::compute(const NodeList& nodes)

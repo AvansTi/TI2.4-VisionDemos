@@ -18,6 +18,7 @@ public:
     }
     NodeConvertColor(json j) : Node(j) {}
     cv::Mat getPinImage3(int pinId) override { return image.mat; }
+    cv::Mat getPinImage1(int pinId) override;
     void render() override;
     void compute(const NodeList& nodes);
 };

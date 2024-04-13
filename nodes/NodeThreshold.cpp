@@ -52,7 +52,7 @@ void NodeThreshold::compute(const NodeList& nodes)
 
     computed = true;
 
-    auto img1 = p1->getPinImage3(inputPins[0].connection);
+    auto img1 = p1->getPinImage1(inputPins[0].connection);
     if (!img1.data)
     {
         computeError = "Image not loaded";

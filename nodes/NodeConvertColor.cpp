@@ -18,6 +18,19 @@ std::vector<ConvertMode> modes =
 };
 
 
+cv::Mat NodeConvertColor::getPinImage1(int pinId) 
+{ 
+    cv::Mat planes[3];
+    cv::split(image.mat, planes);
+    if (pinId == outputPins[1].id) //red
+        return planes[0];
+    if (pinId == outputPins[2].id) //green
+        return planes[1];
+    if (pinId == outputPins[3].id) //blue
+        return planes[2];
+    return cv::Mat();
+}
+
 void NodeConvertColor::render()
 {
     renderBegin("Convert Color");
