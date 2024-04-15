@@ -67,6 +67,15 @@ void NodeThreshold::compute(const NodeList& nodes)
     image.refresh();
 
 }
+cv::Mat NodeThreshold::getPinImage3(int pinId)
+{
+    return image.mat; //TODO: check pinId, though that's pointless here. also convert to image1
+}
+cv::Mat NodeThreshold::getPinImage1(int pinId)
+{
+    return image.mat; //TODO: check pinId, though that's pointless here. also double check if image1
+}
+
 
 void to_json(json& j, const NodeThreshold& node)
 {

@@ -6,10 +6,12 @@
 class NodeCameraStream : public Node
 {
     cv::VideoCapture* cap;
-    Image3 image;
 public:
+    Image3 image;
     int cameraId;
     NodeCameraStream(int id, int& currentPinId);
+    NodeCameraStream(const json& j);
+
     void compute(const NodeList& nodes) override;
     void render() override;
 

@@ -16,7 +16,9 @@ public:
         outputPins[2].type = PinType::Image1;
         outputPins[3].type = PinType::Image1;
     }
-    NodeConvertColor(json j) : Node(j) {}
+    NodeConvertColor(json j) : Node(j) {
+        image.threeComponent = j["threecomponent"];
+    }
     cv::Mat getPinImage3(int pinId) override { return image.mat; }
     cv::Mat getPinImage1(int pinId) override;
     void render() override;

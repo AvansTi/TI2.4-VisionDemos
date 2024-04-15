@@ -20,9 +20,13 @@ void from_json(const json& j, NodeList& nodeList) {
 		const auto& n = j[i];
 		if (n["type"] == (int)NodeType::ImageLoad)
 			nodeList.push_back(new NodeImageLoad(n));
+		else if (n["type"] == (int)NodeType:: CameraStream)
+			nodeList.push_back(new NodeCameraStream(n));
 		else if (n["type"] == (int)NodeType::Add)
 			nodeList.push_back(new NodeAdd(n));
 		else if (n["type"] == (int)NodeType::ConvertColor)
 			nodeList.push_back(new NodeConvertColor(n));
+		else if (n["type"] == (int)NodeType::Threshold)
+			nodeList.push_back(new NodeThreshold(n));
 	}
 }

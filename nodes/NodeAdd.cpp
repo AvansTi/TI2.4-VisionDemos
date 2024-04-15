@@ -65,6 +65,7 @@ void NodeAdd::compute(const NodeList& nodes)
                 return;
             }
             cv::add(img1, img2, image.mat);
+            outputPins[0].type = PinType::Image3;
         }
         else if (t2 == PinType::Image1)
         {
@@ -82,14 +83,75 @@ void NodeAdd::compute(const NodeList& nodes)
             cv::Mat combined;
             cv::cvtColor(img2, combined, cv::COLOR_GRAY2RGB);
             cv::add(img1, combined, image.mat);
+            outputPins[0].type = PinType::Image3;
         }
         else if (t2 == PinType::Int)
         {
             int v = (n2 ? n2->getPinInt(inputPins[1].connection) : value2);
             image.mat = img1 + cv::Scalar(v, v, v);
+            outputPins[0].type = PinType::Image3;
         }
         else
             std::cout << "Unknown pintype: " << (int)t2 << std::endl;
+    }
+    else if (t1 == PinType::Image1)
+    {
+        auto img1 = n1->getPinImage1(inputPins[0].connection);
+        if (!img1.data)
+        {
+            computeError = "Image not loaded";
+            return;
+        }
+        if (img1.cols != image.mat.cols || img1.cols != image.mat.rows)
+            image.mat = cv::Mat(img1.cols, img1.rows, img1.type());
+
+
+        if (t2 == PinType::Image3)
+        {
+            auto img2 = n2->getPinImage3(inputPins[1].connection);
+            if (!img2.data)
+            {
+                computeError = "Image not loaded";
+                return;
+            }
+            if (img1.cols != img2.cols || img1.rows != img2.rows)
+            {
+                computeError = "Image sizes don't match";
+                return;
+            }
+            cv::Mat img1_3component;
+            cv::cvtColor(img2, img1_3component, cv::COLOR_GRAY2RGB);
+            cv::add(img1_3component, img2, image.mat);
+            outputPins[0].type = PinType::Image3;
+        }
+        else if (t2 == PinType::Image1)
+        {
+            auto img2 = n2->getPinImage1(inputPins[1].connection);
+            if (!img2.data)
+            {
+                computeError = "Image not loaded";
+                return;
+            }
+            if (img1.cols != img2.cols || img1.rows != img2.rows)
+            {
+                computeError = "Image sizes don't match";
+                return;
+            }
+            cv::add(img1, img2, image.mat);
+            outputPins[0].type = PinType::Image1;
+        }
+        else if (t2 == PinType::Int)
+        {
+            int v = (n2 ? n2->getPinInt(inputPins[1].connection) : value2);
+            image.mat = img1 + v;
+            outputPins[0].type = PinType::Image1;
+        }
+        else
+            std::cout << "Unknown pintype: " << (int)t2 << std::endl;
+    }
+    else if (t1 == PinType::Int)
+    {
+
     }
 
     image.refresh();
@@ -111,6 +173,7 @@ cv::Mat NodeAdd::getPinImage1(int pinId)
         return planes[1];
     if (pinId == outputPins[3].id) //blue
         return planes[2];
+    return cv::Mat();
 }
 
 void to_json(json& j, const NodeAdd& node)

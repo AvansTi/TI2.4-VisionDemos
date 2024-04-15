@@ -189,6 +189,7 @@ void update()
             const bool valid_link = pinStart && pinEnd && ((int)pinStart->type & (int)pinEnd->type) != 0 && pinStart->type != PinType::Unknown;
             if (valid_link)
             {
+                //TODO: check if the output of the startAttr isn't linked to something else already. if it is, break that connection first or we can have nodes linked to different outputs. I guess don't even have to store the output pins?
                 nodeStart->setPin(start_attr, end_attr);
                 nodeEnd->setPin(end_attr, start_attr);
                 refresh();
@@ -315,10 +316,10 @@ void draw()
 
 
     for (const auto& node : nodes)
-    {
         node->render();
-    }
 
+    for (const auto& node : nodes)
+        node->renderLinks(nodes);
 
     ImNodes::MiniMap(0.2f, minimap_location_);
     ImNodes::EndNodeEditor();

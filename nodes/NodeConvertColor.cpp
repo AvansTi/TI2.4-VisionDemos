@@ -89,4 +89,5 @@ void NodeConvertColor::compute(const NodeList& nodes)
 
 void to_json(json& j, const NodeConvertColor& node)
 {
+    j["threecomponent"] = node.image.threeComponent;
 }

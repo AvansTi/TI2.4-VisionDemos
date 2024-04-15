@@ -62,4 +62,5 @@ cv::Mat NodeImageLoad::getPinImage1(int pinId)
         return planes[1];
     if (pinId == outputPins[3].id) //blue
         return planes[2];
+    return cv::Mat();
 }

@@ -181,9 +181,25 @@ void Node::renderOutputImage(const char* title, int index, Image1& image)
 void Node::renderEnd()
 {
     ImNodes::EndNode();
+}
+
+void Node::renderLinks(const NodeList& nodes)
+{
     for (int i = 0; i < inputs; i++)
         if (inputPins[i].connection != 0)
+        {
+            auto connectedNode = nodes.findNodeWithPin(inputPins[i].connection);
+            auto pin = connectedNode ? connectedNode->getOutputPin(inputPins[i].connection) : nullptr;
+            if (pin && pin->type == PinType::Image1)
+                ImNodes::PushColorStyle(ImNodesCol_Link, 0xff0000ff);
+            if (pin && pin->type == PinType::Image3)
+                ImNodes::PushColorStyle(ImNodesCol_Link, 0xffffffff);
+
             ImNodes::Link(linkId++, inputPins[i].id, inputPins[i].connection);
+            if (pin && (pin->type == PinType::Image1 || pin->type == PinType::Image3))
+                ImNodes::PopColorStyle();
+        }
+
 }
 
 
@@ -198,10 +214,14 @@ void to_json(json& j, const Node& node) {
 
     if (const NodeImageLoad* nodeImageLoad = dynamic_cast<const NodeImageLoad*>(&node))
         to_json(j, *nodeImageLoad);
+    else if (const NodeCameraStream* nodeCameraStream = dynamic_cast<const NodeCameraStream*>(&node))
+        to_json(j, *nodeCameraStream);
     else if (const NodeAdd* nodeAdd = dynamic_cast<const NodeAdd*>(&node))
         to_json(j, *nodeAdd);
     else if (const NodeConvertColor* nodeRgb2Hsv = dynamic_cast<const NodeConvertColor*>(&node))
         to_json(j, *nodeRgb2Hsv);
+    else if (const NodeThreshold* nodeThreshold = dynamic_cast<const NodeThreshold*>(&node))
+        to_json(j, *nodeThreshold);
 
 }
 

@@ -113,6 +113,7 @@ public:
     int outputs = 0;
 
     virtual void render() = 0;
+    void renderLinks(const NodeList& nodes);
     virtual void compute(const NodeList& nodes) = 0;
 
     virtual cv::Mat getPinImage3(int pinId) { throw "oops"; };

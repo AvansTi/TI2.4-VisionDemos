@@ -9,6 +9,16 @@ NodeCameraStream::NodeCameraStream(int id, int& currentPinId) : Node(NodeType::C
 
     cap = new cv::VideoCapture(cameraId, cv::CAP_DSHOW);
 }
+NodeCameraStream::NodeCameraStream(const json& j) : Node(j)
+{
+    cameraId = j["cameraId"];
+    image.threeComponent = j["threecomponent"];
+    cap = new cv::VideoCapture(cameraId, cv::CAP_DSHOW);
+}
+void to_json(json& j, const NodeCameraStream& node) {
+    j["cameraId"] = node.cameraId;
+    j["threecomponent"] = node.image.threeComponent;
+}
 
 void NodeCameraStream::compute(const NodeList& nodes)
 {
@@ -53,4 +63,5 @@ cv::Mat NodeCameraStream::getPinImage1(int pinId)
         return planes[1];
     if (pinId == outputPins[3].id) //blue
         return planes[2];
+    return cv::Mat();
 }
