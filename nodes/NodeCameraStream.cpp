@@ -28,7 +28,11 @@ void NodeCameraStream::compute(const NodeList& nodes)
 
 void NodeCameraStream::render()
 {
-    (*cap) >> image.mat;
+    cv::Mat tmpMat;
+    (*cap) >> tmpMat;
+    cv::cvtColor(tmpMat, image.mat, cv::COLOR_BGR2RGB);
+
+
     image.refresh();
     computed = false;
     renderBegin("Image Load");

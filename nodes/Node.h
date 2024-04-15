@@ -21,7 +21,15 @@ enum class NodeType
     Add,
     Output,
     ConvertColor,
-    Threshold
+    Threshold,
+    Resize,
+    ImgCrop,
+    Multiply,
+    WarpPerspective,
+    GausianBlur,
+    Canny,
+    Dilate,
+    Erode,
 };
 
 
