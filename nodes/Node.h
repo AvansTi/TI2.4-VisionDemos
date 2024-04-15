@@ -22,7 +22,6 @@ enum class NodeType
     Output,
     ConvertColor,
     Threshold,
-    Resize,
     ImgCrop,
     Multiply,
     WarpPerspective,
@@ -58,17 +57,24 @@ public:
         if (mat.rows != 0)
         {
             glBindTexture(GL_TEXTURE_2D, texId);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr());
+            if (mat.channels() == 1)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, mat.ptr());
+            }
+            else
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr());
 
-            glBindTexture(GL_TEXTURE_2D, texId + 1);
+                glBindTexture(GL_TEXTURE_2D, texId + 1);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr());
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr());
 
-            glBindTexture(GL_TEXTURE_2D, texId + 2);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr()+4);
+                glBindTexture(GL_TEXTURE_2D, texId + 2);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr() + 4);
 
-            glBindTexture(GL_TEXTURE_2D, texId + 3);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr()+8);
+                glBindTexture(GL_TEXTURE_2D, texId + 3);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr() + 8);
+            }
 
         }
         else

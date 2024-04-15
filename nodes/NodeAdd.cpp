@@ -165,14 +165,21 @@ cv::Mat NodeAdd::getPinImage3(int pinId)
 
 cv::Mat NodeAdd::getPinImage1(int pinId)
 {
-    cv::Mat planes[3];
-    cv::split(image.mat, planes);
-    if (pinId == outputPins[1].id) //red
-        return planes[0];
-    if (pinId == outputPins[2].id) //green
-        return planes[1];
-    if (pinId == outputPins[3].id) //blue
-        return planes[2];
+    if (outputPins[0].type == PinType::Image3)
+    {
+        cv::Mat planes[3];
+        cv::split(image.mat, planes);
+        if (pinId == outputPins[1].id) //red
+            return planes[0];
+        if (pinId == outputPins[2].id) //green
+            return planes[1];
+        if (pinId == outputPins[3].id) //blue
+            return planes[2];
+    }
+    else if (outputPins[0].type == PinType::Image1)
+    {
+        return image.mat;
+    }
     return cv::Mat();
 }
 
