@@ -361,6 +361,8 @@ void draw()
                 nodes.push_back(new NodeErode(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Dilate"))
                 nodes.push_back(new NodeDilate(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Histogram"))
+                nodes.push_back(new NodeHistogram(currentNodeId++, currentPinId));
 
             if(size != nodes.size())
                 ImNodes::SetNodeScreenSpacePos(currentNodeId - 1, click_pos);

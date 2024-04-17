@@ -10,7 +10,7 @@ public:
     uint8_t maxValue = 255;
     int thresholdType = 0;
 
-    NodeThreshold(int id, int& currentPinId) : Node(NodeType::Threshold, id, 1, 1, currentPinId)
+    NodeThreshold(int id, int& currentPinId) : Node(NodeType::Threshold, id, 3, 1, currentPinId)
     {
         inputPins[0].type = PinType::Image1;
         outputPins[0].type = PinType::Image1;

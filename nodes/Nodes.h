@@ -16,3 +16,4 @@
 
 //output
 #include "NodeOutput.h"
+#include "NodeHistogram.h"

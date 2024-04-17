@@ -90,6 +90,9 @@
     <ClCompile Include="nodes\NodeCrop.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\NodeHistogram.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui-docking\imgui.h">
@@ -168,6 +171,9 @@
       <Filter>nodes</Filter>
     </ClInclude>
     <ClInclude Include="nodes\NodeCrop.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeHistogram.h">
       <Filter>nodes</Filter>
     </ClInclude>
   </ItemGroup>

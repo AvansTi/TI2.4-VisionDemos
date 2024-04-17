@@ -34,5 +34,7 @@ void from_json(const json& j, NodeList& nodeList) {
 			nodeList.push_back(new NodeDilate(n));
 		else if (n["type"] == (int)NodeType::Erode)
 			nodeList.push_back(new NodeErode(n));
+		else if (n["type"] == (int)NodeType::Histogram)
+			nodeList.push_back(new NodeHistogram(n));
 	}
 }

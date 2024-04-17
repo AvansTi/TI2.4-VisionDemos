@@ -331,6 +331,8 @@ void to_json(json& j, const Node& node) {
         to_json(j, *nodeResize);
     else if (const NodeCrop* nodeCrop = dynamic_cast<const NodeCrop*>(&node))
         to_json(j, *nodeCrop);
+    else if (const NodeHistogram* nodeHistogram = dynamic_cast<const NodeHistogram*>(&node))
+        to_json(j, *nodeHistogram);
 }
 
 Image3::Image3()

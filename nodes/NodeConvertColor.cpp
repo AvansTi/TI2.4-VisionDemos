@@ -4,6 +4,7 @@
 #include <misc/cpp/imgui_stdlib.h>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 struct ConvertMode
 {
@@ -13,8 +14,8 @@ struct ConvertMode
 
 std::vector<ConvertMode> modes =
 {
-    { cv::COLOR_RGB2HSV, "Rgb to Hsv"},
-    { cv::COLOR_HSV2RGB, "Hsv to Rgb"},
+    { cv::COLOR_BGR2HSV, "Rgb to Hsv"},
+    { cv::COLOR_HSV2BGR, "Hsv to Rgb"},
 };
 
 
@@ -79,11 +80,12 @@ void NodeConvertColor::compute(const NodeList& nodes)
     }
     if (img1.cols != image.mat.cols || img1.cols != image.mat.rows)
     {
-        image.mat = cv::Mat(img1.cols, img1.rows, img1.type());
+        //image.mat = cv::Mat(img1.cols, img1.rows, img1.type());
     }
 
     cv::cvtColor(img1, image.mat, modes[convertMode].mode);
     image.refresh();
+
 
 }
 

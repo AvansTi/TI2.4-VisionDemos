@@ -27,6 +27,7 @@ enum class NodeType
     Canny,
     Dilate,
     Erode,
+    Histogram,
 };
 
 
