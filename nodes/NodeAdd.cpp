@@ -3,7 +3,7 @@
 #include "../NodeList.h"
 #include <misc/cpp/imgui_stdlib.h>
 #include <opencv2/imgproc.hpp>
-
+#include <iostream>
 
 void NodeAdd::render()
 {
@@ -158,14 +158,11 @@ void NodeAdd::compute(const NodeList& nodes)
 
 }
 
-cv::Mat NodeAdd::getPinImage3(int pinId)
-{
-    return image.mat; //TODO: check pinId, though that's pointless here
-}
 
 cv::Mat NodeAdd::getPinImage1(int pinId)
 {
     if (outputPins[0].type == PinType::Image3)
+        return Node::getPinImage1(pinId);
     {
         cv::Mat planes[3];
         cv::split(image.mat, planes);
@@ -176,7 +173,7 @@ cv::Mat NodeAdd::getPinImage1(int pinId)
         if (pinId == outputPins[3].id) //blue
             return planes[2];
     }
-    else if (outputPins[0].type == PinType::Image1)
+    //else if (outputPins[0].type == PinType::Image1)
     {
         return image.mat;
     }

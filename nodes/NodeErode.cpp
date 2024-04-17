@@ -1,4 +1,4 @@
-#include "NodeThreshold.h"
+#include "NodeErode.h"
 #include <imnodes.h>
 #include "../NodeList.h"
 #include <misc/cpp/imgui_stdlib.h>
@@ -17,17 +17,15 @@ enum ThresholdTypes {
     THRESH_TRIANGLE   = 16 //!< flag, use Triangle algorithm to choose the optimal threshold value
 };
 */
-void NodeThreshold::render()
+void NodeErode::render()
 {
-    renderBegin("Threshold");
+    renderBegin("Erode");
 
     renderInput("Input", 0);
-    renderInputInt("Threshold", 1, threshold);
-    renderInputInt("Max Value", 2, maxValue);
-    
-    if (ImGui::Combo("Type", &thresholdType, "Binary\0Binary_Inv\0Trunc\0ToZero\0ToZero_Inv\0Mask\0Otsu\0Triangle"))
-        computed = false;
 
+    renderInputInt("Iterations", -1, iterations);
+    renderInputInt("Anchor", -1, anchor.x);
+    renderInputInt("Anchor", -1, anchor.y);
 
     renderOutputImage("Image", 0, image);
 
@@ -39,41 +37,40 @@ void NodeThreshold::render()
 
 }
 
-void NodeThreshold::compute(const NodeList& nodes)
+void NodeErode::compute(const NodeList& nodes)
 {
-    auto p1 = nodes.findNodeWithPin(inputPins[0].connection);
-    if (!p1)
+    auto node = nodes.findNodeWithPin(inputPins[0].connection);
+    if (!node)
     {
         computed = true;
         return;
     }
-    if (!p1->computed)
+    if (!node->computed)
         return;
 
     computed = true;
 
-    auto img1 = p1->getPinImage1(inputPins[0].connection);
-    if (!img1.data)
+    auto img = node->getPinImage1(inputPins[0].connection);
+    if (!img.data)
     {
         computeError = "Image not loaded";
         return;
     }
-    if (img1.cols != image.mat.cols || img1.cols != image.mat.rows)
+    if (img.cols != image.mat.cols || img.cols != image.mat.rows)
     {
-        image.mat = cv::Mat(img1.cols, img1.rows, img1.type());
+        image.mat = cv::Mat(img.cols, img.rows, img.type());
     }
 
-    cv::threshold(img1, image.mat, threshold, maxValue, (cv::ThresholdTypes)thresholdType);
+    cv::erode(img, image.mat, cv::Mat(), anchor, iterations);
     image.refresh();
 
 }
 
-cv::Mat NodeThreshold::getPinImage1(int pinId)
-{
-    return image.mat; //TODO: check pinId, though that's pointless here. also double check if image1
-}
 
-
-void to_json(json& j, const NodeThreshold& node)
+void to_json(json& j, const NodeErode& node)
 {
+    j["anchorx"] = node.anchor.x;
+    j["anchory"] = node.anchor.y;
+    j["iterations"] = node.iterations;
+
 }

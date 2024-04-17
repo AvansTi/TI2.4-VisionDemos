@@ -28,5 +28,11 @@ void from_json(const json& j, NodeList& nodeList) {
 			nodeList.push_back(new NodeConvertColor(n));
 		else if (n["type"] == (int)NodeType::Threshold)
 			nodeList.push_back(new NodeThreshold(n));
+		else if (n["type"] == (int)NodeType::Resize)
+			nodeList.push_back(new NodeResize(n));
+		else if (n["type"] == (int)NodeType::Dilate)
+			nodeList.push_back(new NodeDilate(n));
+		else if (n["type"] == (int)NodeType::Erode)
+			nodeList.push_back(new NodeErode(n));
 	}
 }

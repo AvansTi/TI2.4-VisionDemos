@@ -3,6 +3,10 @@
 #include "../lib/imgui-docking/misc/cpp/imgui_stdlib.h"
 #include "../NodeList.h"
 #include "Nodes.h"
+#include <opencv2/imgcodecs.hpp>
+#include <iostream>
+#include <json.hpp>
+using json = nlohmann::json;
 
 
 int Node::linkId = 0;
@@ -52,6 +56,31 @@ Node::Node(const json& j)
     }
 }
 
+void Node::setImage3OutputPin(int index, Image3& image, bool fromJson)
+{
+    if (index + 3 >= outputs)
+    {
+        std::cout << "Error: not enough output pins" << std::endl;
+        throw "";
+    }
+
+    if(!fromJson)
+        outputPins[index+0].type = PinType::Image3;
+    outputPins[index+0].data = &image;
+    if (!fromJson)
+        outputPins[index+1].type = PinType::Image1;
+    outputPins[index+1].data = &image;
+    outputPins[index+1].image1Index = 1;
+    if (!fromJson)
+        outputPins[index+2].type = PinType::Image1;
+    outputPins[index+2].data = &image;
+    outputPins[index+2].image1Index = 2;
+    if (!fromJson)
+        outputPins[index+3].type = PinType::Image1;
+    outputPins[index+3].data = &image;
+    outputPins[index+3].image1Index = 3;
+}
+
 void Node::renderBegin(const char* title)
 {
     ImNodes::BeginNode(id);
@@ -70,8 +99,9 @@ void Node::renderInput(const char* title, int index)
 
 void Node::renderInputFloat(const char* title, int index, float& value)
 {
-    ImNodes::BeginInputAttribute(inputPins[index].id);
-    if (inputPins[index].connection == 0)
+    if (index != -1)
+        ImNodes::BeginInputAttribute(inputPins[index].id);
+    if (index == -1 || inputPins[index].connection == 0)
     {
         ImGui::PushItemWidth(100);
         if (ImGui::InputFloat(title, &value))
@@ -79,13 +109,15 @@ void Node::renderInputFloat(const char* title, int index, float& value)
     }
     else
         ImGui::TextUnformatted(title);
-    ImNodes::EndOutputAttribute();
+    if (index != -1)
+        ImNodes::EndOutputAttribute();
 }
 
 void Node::renderInputInt(const char* title, int index, uint8_t& value)
 {
-    ImNodes::BeginInputAttribute(inputPins[index].id);
-    if (inputPins[index].connection == 0)
+    if(index != -1)
+        ImNodes::BeginInputAttribute(inputPins[index].id);
+    if (index == -1 || inputPins[index].connection == 0)
     {
         int v = value;
         ImGui::PushItemWidth(100);
@@ -95,9 +127,24 @@ void Node::renderInputInt(const char* title, int index, uint8_t& value)
     }
     else
         ImGui::TextUnformatted(title);
-    ImNodes::EndOutputAttribute();
+    if (index != -1)
+        ImNodes::EndOutputAttribute();
 }
-
+void Node::renderInputInt(const char* title, int index, int& value)
+{
+    if (index != -1)
+        ImNodes::BeginInputAttribute(inputPins[index].id);
+    if (index == -1 || inputPins[index].connection == 0)
+    {
+        ImGui::PushItemWidth(100);
+        if (ImGui::SliderInt(title, &value, 0, 255))
+            computed = false;
+    }
+    else
+        ImGui::TextUnformatted(title);
+    if (index != -1)
+        ImNodes::EndOutputAttribute();
+}
 
 void Node::renderOutputImage(const char* title, int index, Image3& image)
 {
@@ -110,6 +157,7 @@ void Node::renderOutputImage(const char* title, int index, Image3& image)
         ImGui::SameLine();
         if (ImGui::Button(image.threeComponent ? "3" : "1"))
             image.threeComponent = !image.threeComponent;
+        ImGui::Text("Size: %dx%d", image.mat.cols, image.mat.rows);
         
         if (ImGui::BeginPopup("Image Debugger RGB"))
         {
@@ -155,13 +203,40 @@ void Node::renderOutputImage(const char* title, int index, Image3& image)
             ImGui::EndPopup();
         }
         ImNodes::EndOutputAttribute();
-    }
-
-
-
-  
+    } 
 
 }
+
+
+cv::Mat Node::getPinImage3(int pinId) 
+{ 
+    auto pin = getOutputPin(pinId);
+    if (pin->data && pin->type == PinType::Image3)
+        return ((Image3*)pin->data)->mat;
+    return cv::Mat();
+}
+
+cv::Mat Node::getPinImage1(int pinId) 
+{ 
+    auto pin = getOutputPin(pinId);
+    if (pin->data && pin->type == PinType::Image1)
+    {
+        if (pin->image1Index > 0) //is secretly an image3
+        {
+            auto img = (Image3*)pin->data;
+            cv::Mat planes[3];
+            cv::split(img->mat, planes);
+            return planes[pin->image1Index - 1];
+        }
+        else
+        {
+            return ((Image1*)pin->data)->mat;
+        }
+    }
+    return cv::Mat();
+
+}
+
 
 void Node::renderOutputImage(const char* title, int index, Image1& image)
 {
@@ -202,6 +277,32 @@ void Node::renderLinks(const NodeList& nodes)
 
 }
 
+Pin* Node::getOutputPin(int pinId)
+{
+    for (int i = 0; i < outputs; i++)
+        if (outputPins[i].id == pinId)
+            return &outputPins[i];
+    return nullptr;
+}
+Pin* Node::getInputPin(int pinId)
+{
+    for (int i = 0; i < inputs; i++)
+        if (inputPins[i].id == pinId)
+            return &inputPins[i];
+    return nullptr;
+}
+
+void Node::setPin(int pinId, int pinValue)
+{
+    for (int i = 0; i < inputs; i++)
+        if (inputPins[i].id == pinId)
+            inputPins[i].connection = pinValue;
+    for (int i = 0; i < outputs; i++)
+        if (outputPins[i].id == pinId)
+            outputPins[i].connection = pinValue;
+
+}
+
 
 
 void to_json(json& j, const Node& node) {
@@ -222,6 +323,81 @@ void to_json(json& j, const Node& node) {
         to_json(j, *nodeRgb2Hsv);
     else if (const NodeThreshold* nodeThreshold = dynamic_cast<const NodeThreshold*>(&node))
         to_json(j, *nodeThreshold);
+    else if (const NodeErode* nodeErode = dynamic_cast<const NodeErode*>(&node))
+        to_json(j, *nodeErode);
+    else if (const NodeDilate* nodeDilate = dynamic_cast<const NodeDilate*>(&node))
+        to_json(j, *nodeDilate);
+    else if (const NodeResize* nodeResize = dynamic_cast<const NodeResize*>(&node))
+        to_json(j, *nodeResize);
+    else if (const NodeCrop* nodeCrop = dynamic_cast<const NodeCrop*>(&node))
+        to_json(j, *nodeCrop);
+}
+
+Image3::Image3()
+{
+    glGenTextures(4, &texId);
+    for (int i = 0; i < 4; i++)
+    {
+        glBindTexture(GL_TEXTURE_2D, texId + i);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
 
 }
 
+void Image3::refresh()
+{
+    if (mat.rows != 0)
+    {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, (mat.step & 3) ? 1 : 4);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, (int)mat.step / (int)mat.elemSize());
+        glBindTexture(GL_TEXTURE_2D, texId);
+        if (mat.channels() == 1)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, mat.ptr());
+        }
+        else
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols, mat.rows, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, mat.ptr());
+
+            glBindTexture(GL_TEXTURE_2D, texId + 1);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr());
+
+            glBindTexture(GL_TEXTURE_2D, texId + 2);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr() + 1);
+
+            glBindTexture(GL_TEXTURE_2D, texId + 3);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.ptr() + 2);
+        }
+
+    }
+    else
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            glBindTexture(GL_TEXTURE_2D, texId + i);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        }
+    }
+}
+
+Image1::Image1()
+{
+    glGenTextures(1, &texId);
+    glBindTexture(GL_TEXTURE_2D, texId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
+
+void Image1::refresh()
+{
+    glBindTexture(GL_TEXTURE_2D, texId);
+    if (mat.rows != 0)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, mat.ptr());
+    else
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+}

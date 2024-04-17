@@ -145,9 +145,13 @@
     <ClCompile Include="nodes\Node.cpp" />
     <ClCompile Include="nodes\NodeAdd.cpp" />
     <ClCompile Include="nodes\NodeCameraStream.cpp" />
+    <ClCompile Include="nodes\NodeCrop.cpp" />
+    <ClCompile Include="nodes\NodeDilate.cpp" />
+    <ClCompile Include="nodes\NodeErode.cpp" />
     <ClCompile Include="nodes\NodeImageLoad.cpp" />
     <ClCompile Include="nodes\NodeOutput.cpp" />
     <ClCompile Include="nodes\NodeConvertColor.cpp" />
+    <ClCompile Include="nodes\NodeResize.cpp" />
     <ClCompile Include="nodes\NodeThreshold.cpp" />
     <ClCompile Include="Pin.cpp" />
     <ClCompile Include="VisionDemos.cpp" />
@@ -169,9 +173,13 @@
     <ClInclude Include="nodes\Node.h" />
     <ClInclude Include="nodes\NodeAdd.h" />
     <ClInclude Include="nodes\NodeCameraStream.h" />
+    <ClInclude Include="nodes\NodeCrop.h" />
+    <ClInclude Include="nodes\NodeDilate.h" />
+    <ClInclude Include="nodes\NodeErode.h" />
     <ClInclude Include="nodes\NodeImageLoad.h" />
     <ClInclude Include="nodes\NodeOutput.h" />
     <ClInclude Include="nodes\NodeConvertColor.h" />
+    <ClInclude Include="nodes\NodeResize.h" />
     <ClInclude Include="nodes\Nodes.h" />
     <ClInclude Include="nodes\NodeThreshold.h" />
     <ClInclude Include="Pin.h" />

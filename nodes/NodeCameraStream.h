@@ -14,10 +14,6 @@ public:
 
     void compute(const NodeList& nodes) override;
     void render() override;
-
-    cv::Mat getPinImage3(int pinId) override;
-    cv::Mat getPinImage1(int pinId) override;
-
 };
 
 

@@ -78,6 +78,18 @@
     <ClCompile Include="nodes\NodeThreshold.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\NodeErode.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeDilate.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeResize.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeCrop.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui-docking\imgui.h">
@@ -144,6 +156,18 @@
       <Filter>nodes</Filter>
     </ClInclude>
     <ClInclude Include="nodes\NodeThreshold.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeErode.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeDilate.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeResize.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeCrop.h">
       <Filter>nodes</Filter>
     </ClInclude>
   </ItemGroup>

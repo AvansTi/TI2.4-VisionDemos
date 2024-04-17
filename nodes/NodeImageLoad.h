@@ -13,9 +13,6 @@ public:
 
     void render() override;
     void compute(const NodeList& nodes);
-    cv::Mat getPinImage3(int pinId) override;
-    cv::Mat getPinImage1(int pinId) override;
-
 };
 
 void to_json(json& j, const NodeImageLoad& node);

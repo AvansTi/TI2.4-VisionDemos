@@ -11,13 +11,11 @@ public:
     NodeConvertColor(int id, int& currentPinId) : Node(NodeType::ConvertColor, id, 1, 4, currentPinId)
     {
         inputPins[0].type = PinType::Image3;
-        outputPins[0].type = PinType::Image3;
-        outputPins[1].type = PinType::Image1;
-        outputPins[2].type = PinType::Image1;
-        outputPins[3].type = PinType::Image1;
+        setImage3OutputPin(0, image);
     }
     NodeConvertColor(json j) : Node(j) {
         image.threeComponent = j["threecomponent"];
+        setImage3OutputPin(0, image, true);
     }
     cv::Mat getPinImage3(int pinId) override { return image.mat; }
     cv::Mat getPinImage1(int pinId) override;

@@ -14,15 +14,13 @@ public:
     {
         inputPins[0].type = PinType::Any;
         inputPins[1].type = PinType::Any;
-        outputPins[0].type = PinType::Image3;
-        outputPins[1].type = PinType::Image1;
-        outputPins[2].type = PinType::Image1;
-        outputPins[3].type = PinType::Image1;
+        setImage3OutputPin(0, image);
     }
-    NodeAdd(json j) : Node(j) {}
+    NodeAdd(json j) : Node(j) {
+        setImage3OutputPin(0, image, true);
+    }
     void render() override;
     void compute(const NodeList& nodes);
-    cv::Mat getPinImage3(int pinId) override;
     cv::Mat getPinImage1(int pinId) override;
 };
 

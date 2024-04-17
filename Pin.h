@@ -21,6 +21,12 @@ class Pin
 {
 public:
 	int id = 0;
-	int connection = 0;
     PinType type = PinType::Unknown;
+
+    //should be for input pin only
+    int connection = 0;
+    //should be for output pin only
+    void* data = nullptr;
+    //should be for output pin image1 only
+    int image1Index = 0;
 };

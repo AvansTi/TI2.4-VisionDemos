@@ -1,3 +1,12 @@
+//NOTICE
+// This code was made in a rush with little time, so it is not the best example of coding styles
+// feel free to improve and send in pull requests
+#ifdef _WIN32
+#include <Windows.h>
+#include <direct.h>
+#include <commdlg.h>
+#endif
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -18,6 +27,8 @@
 #include <json.hpp>
 using json = nlohmann::json;
 
+
+
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -29,33 +40,19 @@ GLFWwindow* window;
 ImNodesMiniMapLocation minimap_location_ = ImNodesMiniMapLocation_TopLeft;
 int currentNodeId = 1;
 int currentPinId = 1;
+std::string currentFileName = "";
 
 void init();
 void update();
 void draw();
 void refresh();
+std::string GetSaveFileName(std::string defaultFilename = "");
+std::string GetLoadFileName();
 
 int main(int argc, char** argv)
 {
     init();
-    std::ifstream ifile("map.json");
-    if (ifile.is_open() && !ifile.bad())
-    {
-        json data;
-        ifile >> data;
-        nodes = data.get<NodeList>();
-        ImNodes::LoadCurrentEditorStateFromIniFile("map.ini");
 
-        for (auto node : nodes)
-        {
-            currentNodeId = std::max(currentNodeId+1, node->id);
-            for (int i = 0; i < node->inputs; i++)
-                currentPinId = std::max(node->inputPins[i].id+1, currentPinId);
-            for (int i = 0; i < node->outputs; i++)
-                currentPinId = std::max(node->outputPins[i].id+1, currentPinId);
-
-        }
-    }
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 
@@ -74,19 +71,9 @@ int main(int argc, char** argv)
 
         draw();
 
-
-
-
-
-
         ImGui::End();
 
-
-
-
-
-
-        // Rendering
+        // actual Rendering
         ImGui::Render();
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -108,10 +95,6 @@ int main(int argc, char** argv)
 
         glfwSwapBuffers(window);
     }
-#ifdef __EMSCRIPTEN__
-    EMSCRIPTEN_MAINLOOP_END;
-#endif
-
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -198,7 +181,11 @@ void update()
     }
 }
 
-
+inline bool ends_with(std::string const& value, std::string const& ending)
+{
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
 void draw()
 {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -211,12 +198,76 @@ void draw()
     {
         if (ImGui::BeginMenu("File"))
         {
+            if (ImGui::MenuItem("New"))
+            {
+                for (auto n : nodes)
+                    delete n;
+                nodes.clear();
+            }
+            if (ImGui::MenuItem("Open"))
+            {
+                std::string fileName = GetLoadFileName();
+                if (fileName != "")
+                {
+                    for (auto n : nodes)
+                        delete n;
+                    nodes.clear();
+
+
+                    std::ifstream ifile(fileName);
+                    if (ifile.is_open() && !ifile.bad())
+                    {
+                        json data;
+                        ifile >> data;
+                        nodes = data.get<NodeList>();
+                        ImNodes::LoadCurrentEditorStateFromIniFile((fileName + ".ini").c_str());
+
+                        for (auto node : nodes)
+                        {
+                            currentNodeId = std::max(currentNodeId + 1, node->id);
+                            for (int i = 0; i < node->inputs; i++)
+                                currentPinId = std::max(node->inputPins[i].id + 1, currentPinId);
+                            for (int i = 0; i < node->outputs; i++)
+                                currentPinId = std::max(node->outputPins[i].id + 1, currentPinId);
+
+                        }
+                    }
+                    currentFileName = fileName;
+                }
+            }
             if (ImGui::MenuItem("Save"))
             {
-                ImNodes::SaveCurrentEditorStateToIniFile("map.ini");
-                json j = nodes;
-                std::ofstream file("map.json");
-                file << j;
+                if (currentFileName == "")
+                {
+                    auto newFileName = GetSaveFileName();
+                    if (newFileName != "")
+                    {
+                        currentFileName = newFileName;
+                        if (!ends_with(currentFileName, ".vision"))
+                            currentFileName += ".vision";
+                    }
+                }
+                if (currentFileName != "")
+                {
+                    ImNodes::SaveCurrentEditorStateToIniFile((currentFileName + ".ini").c_str());
+                    json j = nodes;
+                    std::ofstream file(currentFileName);
+                    file << j;
+                }
+            }
+            if (ImGui::MenuItem("Save As"))
+            {
+                auto newFileName = GetSaveFileName();
+                if (newFileName != "")
+                {
+                    currentFileName = newFileName;
+                    if (!ends_with(currentFileName, ".vision"))
+                        currentFileName += ".vision";
+                    ImNodes::SaveCurrentEditorStateToIniFile((currentFileName + ".ini").c_str());
+                    json j = nodes;
+                    std::ofstream file(currentFileName);
+                    file << j;
+                }
             }
             ImGui::EndMenu();
         }
@@ -298,12 +349,18 @@ void draw()
                 nodes.push_back(new NodeImageLoad(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("VideoCapture"))
                 nodes.push_back(new NodeCameraStream(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Resize"))
+                nodes.push_back(new NodeResize(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Add"))
                 nodes.push_back(new NodeAdd(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Convert Color Space"))
                 nodes.push_back(new NodeConvertColor(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Threshold"))
                 nodes.push_back(new NodeThreshold(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Erode"))
+                nodes.push_back(new NodeErode(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Dilate"))
+                nodes.push_back(new NodeDilate(currentNodeId++, currentPinId));
 
             if(size != nodes.size())
                 ImNodes::SetNodeScreenSpacePos(currentNodeId - 1, click_pos);
@@ -348,3 +405,72 @@ void refresh()
     //json j = nodes;
     //std::cout << j<< std::endl;
 }
+
+
+
+#ifdef _WIN32
+std::string GetSaveFileName(std::string defaultFilename)
+{
+    CoInitializeEx(0, 0);
+    char curdir[100];
+    _getcwd(curdir, 100);
+
+    HWND hWnd = nullptr;
+    char buf[256];
+    ZeroMemory(&buf, sizeof(buf));
+    strcpy_s(buf, 256, defaultFilename.c_str());
+
+    OPENFILENAMEA ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hWnd;
+    ofn.lpstrFile = buf;
+    ofn.nMaxFile = 1024;
+    ofn.lpstrFilter = "Vision File\0*.vision\0All Files\0*.*\0";
+    ofn.nFilterIndex = 0;
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_ENABLESIZING | OFN_OVERWRITEPROMPT;
+    if (GetSaveFileNameA(&ofn))
+    {
+        _chdir(curdir);
+        return buf;
+    }
+    _chdir(curdir);
+    return "";
+}
+std::string GetLoadFileName()
+{
+    CoInitializeEx(0, 0);
+    char curdir[100];
+    _getcwd(curdir, 100);
+
+    HWND hWnd = nullptr;
+    char buf[256];
+    ZeroMemory(&buf, sizeof(buf));
+
+    OPENFILENAMEA ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hWnd;
+    ofn.lpstrFile = buf;
+    ofn.nMaxFile = 1024;
+    ofn.lpstrFilter = "Vision File\0*.vision\0All Files\0*.*\0";
+    ofn.nFilterIndex = 0;
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_ENABLESIZING | OFN_OVERWRITEPROMPT;
+    if (GetOpenFileNameA(&ofn))
+    {
+        _chdir(curdir);
+        return buf;
+    }
+    _chdir(curdir);
+    return "";
+}
+#else
+std::string GetLoadFileName() { return "file.vision"; }
+std::string GetSaveFileName(std::string defaultFilename = "") { return "file.vision"; }
+#endif

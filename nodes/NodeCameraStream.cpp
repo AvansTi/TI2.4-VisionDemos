@@ -2,11 +2,10 @@
 #include <imnodes.h>
 #include <misc/cpp/imgui_stdlib.h>
 
-NodeCameraStream::NodeCameraStream(int id, int& currentPinId) : Node(NodeType::CameraStream, id, 0, 1, currentPinId)
+NodeCameraStream::NodeCameraStream(int id, int& currentPinId) : Node(NodeType::CameraStream, id, 0, 4, currentPinId)
 {
     cameraId = 0;
-    outputPins[0].type = PinType::Image3;
-
+    setImage3OutputPin(0, image);
     cap = new cv::VideoCapture(cameraId, cv::CAP_DSHOW);
 }
 NodeCameraStream::NodeCameraStream(const json& j) : Node(j)
@@ -14,6 +13,7 @@ NodeCameraStream::NodeCameraStream(const json& j) : Node(j)
     cameraId = j["cameraId"];
     image.threeComponent = j["threecomponent"];
     cap = new cv::VideoCapture(cameraId, cv::CAP_DSHOW);
+    setImage3OutputPin(0, image, true);
 }
 void to_json(json& j, const NodeCameraStream& node) {
     j["cameraId"] = node.cameraId;
@@ -28,11 +28,7 @@ void NodeCameraStream::compute(const NodeList& nodes)
 
 void NodeCameraStream::render()
 {
-    cv::Mat tmpMat;
-    (*cap) >> tmpMat;
-    cv::cvtColor(tmpMat, image.mat, cv::COLOR_BGR2RGB);
-
-
+    (*cap) >> image.mat;
     image.refresh();
     computed = false;
     renderBegin("Image Load");
@@ -50,22 +46,3 @@ void NodeCameraStream::render()
     renderEnd();
 }
 
-
-cv::Mat NodeCameraStream::getPinImage3(int pinId)
-{
-    return image.mat; //TODO: check pinId, though that's pointless here
-}
-
-
-cv::Mat NodeCameraStream::getPinImage1(int pinId)
-{
-    cv::Mat planes[3];
-    cv::split(image.mat, planes);
-    if (pinId == outputPins[1].id) //red
-        return planes[0];
-    if (pinId == outputPins[2].id) //green
-        return planes[1];
-    if (pinId == outputPins[3].id) //blue
-        return planes[2];
-    return cv::Mat();
-}
