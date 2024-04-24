@@ -179,6 +179,39 @@ void update()
             }
         }
     }
+
+    /* { //delete links
+        const int num_selected = ImNodes::NumSelectedLinks();
+        if (num_selected > 0 && ImGui::IsKeyReleased(ImGuiKey_X) && !ImGui::GetIO().WantCaptureKeyboard)
+        {
+            static std::vector<int> selected_links;
+            selected_links.resize(static_cast<size_t>(num_selected));
+            ImNodes::GetSelectedLinks(selected_links.data());
+            for (const int edge_id : selected_links)
+            {
+                graph_.erase_edge(edge_id);
+            }
+        }
+    }*/
+
+    { //delete nodes
+        const int num_selected = ImNodes::NumSelectedNodes();
+        if (num_selected > 0 && ImGui::IsKeyReleased(ImGuiKey_X) && !ImGui::GetIO().WantCaptureKeyboard)
+        {
+            static std::vector<int> selected_nodes;
+            selected_nodes.resize(static_cast<size_t>(num_selected));
+            ImNodes::GetSelectedNodes(selected_nodes.data());
+
+            for(int i = (int)nodes.size()-1; i >= 0; i--)
+            {
+                if (std::find(selected_nodes.begin(), selected_nodes.end(), nodes[i]->id) == selected_nodes.end())
+                    continue;
+                delete nodes[i];
+                nodes.erase(nodes.begin() + i);
+            }
+        }
+    }
+
 }
 
 inline bool ends_with(std::string const& value, std::string const& ending)
@@ -224,13 +257,14 @@ void draw()
 
                         for (auto node : nodes)
                         {
-                            currentNodeId = std::max(currentNodeId + 1, node->id);
+                            currentNodeId = std::max(currentNodeId + 1, node->id+1);
                             for (int i = 0; i < node->inputs; i++)
                                 currentPinId = std::max(node->inputPins[i].id + 1, currentPinId);
                             for (int i = 0; i < node->outputs; i++)
                                 currentPinId = std::max(node->outputPins[i].id + 1, currentPinId);
 
                         }
+                        std::cout << "Current node id: " << currentNodeId << ", Current Pin Id: " << currentPinId << std::endl;
                     }
                     currentFileName = fileName;
                 }
@@ -353,6 +387,8 @@ void draw()
                 nodes.push_back(new NodeResize(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Add"))
                 nodes.push_back(new NodeAdd(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Subtract"))
+                nodes.push_back(new NodeSubtract(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Convert Color Space"))
                 nodes.push_back(new NodeConvertColor(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Threshold"))
@@ -363,6 +399,14 @@ void draw()
                 nodes.push_back(new NodeDilate(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Histogram"))
                 nodes.push_back(new NodeHistogram(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("InRange"))
+                nodes.push_back(new NodeInRange(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("DistanceTransform"))
+                nodes.push_back(new NodeDistanceTransform(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Normalize"))
+                nodes.push_back(new NodeNormalize(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Convolve"))
+                nodes.push_back(new NodeConvolve(currentNodeId  ++, currentPinId));
 
             if(size != nodes.size())
                 ImNodes::SetNodeScreenSpacePos(currentNodeId - 1, click_pos);
@@ -382,7 +426,7 @@ void draw()
 
     ImNodes::MiniMap(0.2f, minimap_location_);
     ImNodes::EndNodeEditor();
-}
+}   
 
 void refresh()
 {

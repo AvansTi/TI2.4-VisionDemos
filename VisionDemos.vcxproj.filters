@@ -93,6 +93,21 @@
     <ClCompile Include="nodes\NodeHistogram.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\NodeSubtract.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeInRange.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeDistanceTransform.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeNormalize.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeConvolve.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui-docking\imgui.h">
@@ -174,6 +189,21 @@
       <Filter>nodes</Filter>
     </ClInclude>
     <ClInclude Include="nodes\NodeHistogram.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeSubtract.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeInRange.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeDistanceTransform.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeNormalize.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeConvolve.h">
       <Filter>nodes</Filter>
     </ClInclude>
   </ItemGroup>

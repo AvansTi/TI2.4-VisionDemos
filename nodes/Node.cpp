@@ -157,7 +157,7 @@ void Node::renderOutputImage(const char* title, int index, Image3& image)
         ImGui::SameLine();
         if (ImGui::Button(image.threeComponent ? "3" : "1"))
             image.threeComponent = !image.threeComponent;
-        ImGui::Text("Size: %dx%d", image.mat.cols, image.mat.rows);
+        ImGui::Text("Size: %dx%dx%d", image.mat.cols, image.mat.rows, image.mat.channels());
         
         if (ImGui::BeginPopup("Image Debugger RGB"))
         {
@@ -249,7 +249,7 @@ void Node::renderOutputImage(const char* title, int index, Image1& image)
         ImGui::Image((ImTextureID)(image.texId), ImVec2(500, 500));
         ImGui::EndPopup();
     }
-    ImGui::SameLine();
+    ImGui::Text("Size: %dx%dx%d", image.mat.cols, image.mat.rows, image.mat.channels());
     ImNodes::EndOutputAttribute();
 }
 
@@ -333,6 +333,10 @@ void to_json(json& j, const Node& node) {
         to_json(j, *nodeCrop);
     else if (const NodeHistogram* nodeHistogram = dynamic_cast<const NodeHistogram*>(&node))
         to_json(j, *nodeHistogram);
+    else if (const NodeNormalize* nodeNormalize = dynamic_cast<const NodeNormalize*>(&node))
+        to_json(j, *nodeNormalize);
+    else if (const NodeInRange* nodeInRange = dynamic_cast<const NodeInRange*>(&node))
+        to_json(j, *nodeInRange);
 }
 
 Image3::Image3()
@@ -399,7 +403,12 @@ void Image1::refresh()
 {
     glBindTexture(GL_TEXTURE_2D, texId);
     if (mat.rows != 0)
+    {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, (mat.step & 3) ? 1 : 4);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, (int)mat.step / (int)mat.elemSize());
+
         glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, mat.cols, mat.rows, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, mat.ptr());
+    }
     else
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 }

@@ -23,11 +23,15 @@ enum class NodeType
     ImgCrop,
     Multiply,
     WarpPerspective,
-    GausianBlur,
+    Convolve,
     Canny,
     Dilate,
     Erode,
     Histogram,
+    Subtract,
+    InRange,
+    DistanceTransform,
+    Normalize,
 };
 
 

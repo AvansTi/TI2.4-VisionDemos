@@ -36,5 +36,15 @@ void from_json(const json& j, NodeList& nodeList) {
 			nodeList.push_back(new NodeErode(n));
 		else if (n["type"] == (int)NodeType::Histogram)
 			nodeList.push_back(new NodeHistogram(n));
+		else if (n["type"] == (int)NodeType::Subtract)
+			nodeList.push_back(new NodeSubtract(n));
+		else if (n["type"] == (int)NodeType::InRange)
+			nodeList.push_back(new NodeInRange(n));
+		else if (n["type"] == (int)NodeType::InRange)
+			nodeList.push_back(new NodeDistanceTransform(n));
+		else if (n["type"] == (int)NodeType::Normalize)
+			nodeList.push_back(new NodeNormalize(n));
+		else if (n["type"] == (int)NodeType::Convolve)
+			nodeList.push_back(new NodeConvolve(n));
 	}
 }
