@@ -337,6 +337,10 @@ void to_json(json& j, const Node& node) {
         to_json(j, *nodeNormalize);
     else if (const NodeInRange* nodeInRange = dynamic_cast<const NodeInRange*>(&node))
         to_json(j, *nodeInRange);
+    else if (const NodeMultiply* nodeMultiply = dynamic_cast<const NodeMultiply*>(&node))
+        to_json(j, *nodeMultiply);
+    else if (const NodeAnd* nodeAnd = dynamic_cast<const NodeAnd*>(&node))
+        to_json(j, *nodeAnd);
 }
 
 Image3::Image3()

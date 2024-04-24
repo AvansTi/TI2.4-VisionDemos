@@ -144,6 +144,7 @@
     <ClCompile Include="NodeList.cpp" />
     <ClCompile Include="nodes\Node.cpp" />
     <ClCompile Include="nodes\NodeAdd.cpp" />
+    <ClCompile Include="nodes\NodeAnd.cpp" />
     <ClCompile Include="nodes\NodeCameraStream.cpp" />
     <ClCompile Include="nodes\NodeConvolve.cpp" />
     <ClCompile Include="nodes\NodeCrop.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="nodes\NodeHistogram.cpp" />
     <ClCompile Include="nodes\NodeImageLoad.cpp" />
     <ClCompile Include="nodes\NodeInRange.cpp" />
+    <ClCompile Include="nodes\NodeMultiply.cpp" />
     <ClCompile Include="nodes\NodeNormalize.cpp" />
     <ClCompile Include="nodes\NodeOutput.cpp" />
     <ClCompile Include="nodes\NodeConvertColor.cpp" />
@@ -178,6 +180,7 @@
     <ClInclude Include="NodeList.h" />
     <ClInclude Include="nodes\Node.h" />
     <ClInclude Include="nodes\NodeAdd.h" />
+    <ClInclude Include="nodes\NodeAnd.h" />
     <ClInclude Include="nodes\NodeCameraStream.h" />
     <ClInclude Include="nodes\NodeConvolve.h" />
     <ClInclude Include="nodes\NodeCrop.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="nodes\NodeHistogram.h" />
     <ClInclude Include="nodes\NodeImageLoad.h" />
     <ClInclude Include="nodes\NodeInRange.h" />
+    <ClInclude Include="nodes\NodeMultiply.h" />
     <ClInclude Include="nodes\NodeNormalize.h" />
     <ClInclude Include="nodes\NodeOutput.h" />
     <ClInclude Include="nodes\NodeConvertColor.h" />

@@ -46,5 +46,9 @@ void from_json(const json& j, NodeList& nodeList) {
 			nodeList.push_back(new NodeNormalize(n));
 		else if (n["type"] == (int)NodeType::Convolve)
 			nodeList.push_back(new NodeConvolve(n));
+		else if (n["type"] == (int)NodeType::Multiply)
+			nodeList.push_back(new NodeMultiply(n));
+		else if (n["type"] == (int)NodeType::And)
+			nodeList.push_back(new NodeAnd(n));
 	}
 }

@@ -32,6 +32,7 @@ enum class NodeType
     InRange,
     DistanceTransform,
     Normalize,
+    And,
 };
 
 

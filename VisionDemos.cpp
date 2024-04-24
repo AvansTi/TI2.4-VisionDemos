@@ -196,7 +196,7 @@ void update()
 
     { //delete nodes
         const int num_selected = ImNodes::NumSelectedNodes();
-        if (num_selected > 0 && ImGui::IsKeyReleased(ImGuiKey_X) && !ImGui::GetIO().WantCaptureKeyboard)
+        if (num_selected > 0 && ImGui::IsKeyReleased(ImGuiKey_X) && !ImGui::IsItemFocused())
         {
             static std::vector<int> selected_nodes;
             selected_nodes.resize(static_cast<size_t>(num_selected));
@@ -389,6 +389,10 @@ void draw()
                 nodes.push_back(new NodeAdd(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Subtract"))
                 nodes.push_back(new NodeSubtract(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Multiply"))
+                nodes.push_back(new NodeMultiply(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("And"))
+                nodes.push_back(new NodeAnd(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Convert Color Space"))
                 nodes.push_back(new NodeConvertColor(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Threshold"))

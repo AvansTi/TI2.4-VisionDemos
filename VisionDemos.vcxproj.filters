@@ -108,6 +108,12 @@
     <ClCompile Include="nodes\NodeConvolve.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\NodeMultiply.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeAnd.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui-docking\imgui.h">
@@ -204,6 +210,12 @@
       <Filter>nodes</Filter>
     </ClInclude>
     <ClInclude Include="nodes\NodeConvolve.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeMultiply.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeAnd.h">
       <Filter>nodes</Filter>
     </ClInclude>
   </ItemGroup>

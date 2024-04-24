@@ -17,6 +17,8 @@
 #include "NodeDistanceTransform.h"
 #include "NodeNormalize.h"
 #include "NodeConvolve.h"
+#include "NodeMultiply.h"
+#include "NodeAnd.h"
 
 
 //output
