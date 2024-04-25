@@ -333,6 +333,8 @@ void to_json(json& j, const Node& node) {
         to_json(j, *nodeCrop);
     else if (const NodeHistogram* nodeHistogram = dynamic_cast<const NodeHistogram*>(&node))
         to_json(j, *nodeHistogram);
+    else if (const NodeDistanceTransform* nodeDistanceTransform = dynamic_cast<const NodeDistanceTransform*>(&node))
+        to_json(j, *nodeDistanceTransform);
     else if (const NodeNormalize* nodeNormalize = dynamic_cast<const NodeNormalize*>(&node))
         to_json(j, *nodeNormalize);
     else if (const NodeInRange* nodeInRange = dynamic_cast<const NodeInRange*>(&node))
