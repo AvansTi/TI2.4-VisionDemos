@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="lib\imgui-docking\imgui.cpp" />
@@ -141,16 +142,20 @@
     <ClCompile Include="lib\imgui-docking\imgui_widgets.cpp" />
     <ClCompile Include="lib\imgui-docking\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="lib\imnodes-master\imnodes.cpp" />
+    <ClCompile Include="MRU.cpp" />
     <ClCompile Include="NodeList.cpp" />
     <ClCompile Include="nodes\Node.cpp" />
     <ClCompile Include="nodes\NodeAdd.cpp" />
     <ClCompile Include="nodes\NodeAnd.cpp" />
     <ClCompile Include="nodes\NodeCameraStream.cpp" />
+    <ClCompile Include="nodes\NodeCanny.cpp" />
+    <ClCompile Include="nodes\NodeContours.cpp" />
     <ClCompile Include="nodes\NodeConvolve.cpp" />
     <ClCompile Include="nodes\NodeCrop.cpp" />
     <ClCompile Include="nodes\NodeDilate.cpp" />
     <ClCompile Include="nodes\NodeDistanceTransform.cpp" />
     <ClCompile Include="nodes\NodeErode.cpp" />
+    <ClCompile Include="nodes\NodeGaussianBlur.cpp" />
     <ClCompile Include="nodes\NodeHistogram.cpp" />
     <ClCompile Include="nodes\NodeImageLoad.cpp" />
     <ClCompile Include="nodes\NodeInRange.cpp" />
@@ -165,6 +170,7 @@
     <ClCompile Include="VisionDemos.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Image.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_glfw.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3_loader.h" />
@@ -177,16 +183,20 @@
     <ClInclude Include="lib\imgui-docking\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="lib\imnodes-master\imnodes.h" />
     <ClInclude Include="lib\imnodes-master\imnodes_internal.h" />
+    <ClInclude Include="MRU.h" />
     <ClInclude Include="NodeList.h" />
     <ClInclude Include="nodes\Node.h" />
     <ClInclude Include="nodes\NodeAdd.h" />
     <ClInclude Include="nodes\NodeAnd.h" />
     <ClInclude Include="nodes\NodeCameraStream.h" />
+    <ClInclude Include="nodes\NodeCanny.h" />
+    <ClInclude Include="nodes\NodeContours.h" />
     <ClInclude Include="nodes\NodeConvolve.h" />
     <ClInclude Include="nodes\NodeCrop.h" />
     <ClInclude Include="nodes\NodeDilate.h" />
     <ClInclude Include="nodes\NodeDistanceTransform.h" />
     <ClInclude Include="nodes\NodeErode.h" />
+    <ClInclude Include="nodes\NodeGaussianBlur.h" />
     <ClInclude Include="nodes\NodeHistogram.h" />
     <ClInclude Include="nodes\NodeImageLoad.h" />
     <ClInclude Include="nodes\NodeInRange.h" />

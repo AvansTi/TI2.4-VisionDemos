@@ -19,8 +19,11 @@
 #include "NodeConvolve.h"
 #include "NodeMultiply.h"
 #include "NodeAnd.h"
+#include "NodeGaussianBlur.h"
+#include "NodeCanny.h"
 
 
 //output
 #include "NodeOutput.h"
 #include "NodeHistogram.h"
+#include "NodeContours.h"

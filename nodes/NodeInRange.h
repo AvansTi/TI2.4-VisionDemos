@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Node.h"
+#include "../Image.h"
 
 class NodeInRange : public Node
 {

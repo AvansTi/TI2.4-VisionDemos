@@ -1,16 +1,18 @@
-#include "NodeDistanceTransform.h"
+#include "NodeGaussianBlur.h"
 #include <imnodes.h>
 #include "../NodeList.h"
 #include <misc/cpp/imgui_stdlib.h>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
-void NodeDistanceTransform::render()
+void NodeGaussianBlur::render()
 {
-    renderBegin("DistanceTransform");
+    renderBegin("GaussianBlur");
 
     renderInput("Input", 0);
-    renderInputInt("Mask Size", -1, maskSize);
+
+    renderInputInt("Size", -1, size);
+    renderInputFloat("Sigma", -1, sigma);
 
     renderOutputImage("Image", 0, image);
 
@@ -21,7 +23,7 @@ void NodeDistanceTransform::render()
 
 }
 
-void NodeDistanceTransform::compute(const NodeList& nodes)
+void NodeGaussianBlur::compute(const NodeList& nodes)
 {
     auto node = nodes.findNodeWithPin(inputPins[0].connection);
     if (!node)
@@ -33,8 +35,8 @@ void NodeDistanceTransform::compute(const NodeList& nodes)
         return;
 
     computed = true;
-
-    auto img = node->getPinImage1(inputPins[0].connection);
+    auto pin = node->getOutputPin(inputPins[0].connection);
+    auto img = pin->type == PinType::Image1 ? node->getPinImage1(inputPins[0].connection) : node->getPinImage3(inputPins[0].connection);
     if (!img.data)
     {
         computeError = "Image not loaded";
@@ -45,13 +47,16 @@ void NodeDistanceTransform::compute(const NodeList& nodes)
         image.mat = cv::Mat(img.cols, img.rows, img.type());
     }
 
-    cv::distanceTransform(img, image.mat, cv::DistanceTypes::DIST_L1, maskSize, CV_8U);
+    cv::GaussianBlur(img, image.mat, cv::Size(size,size), sigma, sigma);
+
     image.refresh();
 
+    outputPins[0].type = pin->type;
 }
 
 
-void to_json(json& j, const NodeDistanceTransform& node)
+void to_json(json& j, const NodeGaussianBlur& node)
 {
-    j["masksize"] = node.maskSize; 
+    j["size"] = node.size;
+    j["sigma"] = node.sigma;
 }

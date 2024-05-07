@@ -20,6 +20,7 @@
 #include "nodes/Node.h"
 #include "nodes/Nodes.h"
 #include "NodeList.h"
+#include "MRU.h"
 #include <vector>
 #include <map>
 #include <opencv2/core.hpp>
@@ -35,6 +36,7 @@ static void glfw_error_callback(int error, const char* description)
 }
 
 //state
+MRU mru;
 NodeList   nodes;
 GLFWwindow* window;
 ImNodesMiniMapLocation minimap_location_ = ImNodesMiniMapLocation_TopLeft;
@@ -46,6 +48,7 @@ void init();
 void update();
 void draw();
 void refresh();
+void loadFile(std::string fileName);
 std::string GetSaveFileName(std::string defaultFilename = "");
 std::string GetLoadFileName();
 
@@ -144,6 +147,10 @@ void init()
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     ImNodes::CreateContext();
+
+    if(mru.files.size() > 0)
+        loadFile(std::string(*mru.files.begin()));
+
 }
 
 void update()
@@ -241,33 +248,17 @@ void draw()
             {
                 std::string fileName = GetLoadFileName();
                 if (fileName != "")
+                    loadFile(fileName);
+            }
+            if (ImGui::BeginMenu("Recent"))
+            {
+                for (const auto& fileName : mru.files)
                 {
-                    for (auto n : nodes)
-                        delete n;
-                    nodes.clear();
-
-
-                    std::ifstream ifile(fileName);
-                    if (ifile.is_open() && !ifile.bad())
-                    {
-                        json data;
-                        ifile >> data;
-                        nodes = data.get<NodeList>();
-                        ImNodes::LoadCurrentEditorStateFromIniFile((fileName + ".ini").c_str());
-
-                        for (auto node : nodes)
-                        {
-                            currentNodeId = std::max(currentNodeId + 1, node->id+1);
-                            for (int i = 0; i < node->inputs; i++)
-                                currentPinId = std::max(node->inputPins[i].id + 1, currentPinId);
-                            for (int i = 0; i < node->outputs; i++)
-                                currentPinId = std::max(node->outputPins[i].id + 1, currentPinId);
-
-                        }
-                        std::cout << "Current node id: " << currentNodeId << ", Current Pin Id: " << currentPinId << std::endl;
-                    }
-                    currentFileName = fileName;
+                    if (ImGui::MenuItem(fileName.c_str()))
+                        loadFile(fileName);
                 }
+
+                ImGui::EndMenu();
             }
             if (ImGui::MenuItem("Save"))
             {
@@ -410,7 +401,13 @@ void draw()
             if (ImGui::MenuItem("Normalize"))
                 nodes.push_back(new NodeNormalize(currentNodeId++, currentPinId));
             if (ImGui::MenuItem("Convolve"))
-                nodes.push_back(new NodeConvolve(currentNodeId  ++, currentPinId));
+                nodes.push_back(new NodeConvolve(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("GaussianBlur"))
+                nodes.push_back(new NodeGaussianBlur(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Canny"))
+                nodes.push_back(new NodeCanny(currentNodeId++, currentPinId));
+            if (ImGui::MenuItem("Contours"))
+                nodes.push_back(new NodeContours(currentNodeId++, currentPinId));
 
             if(size != nodes.size())
                 ImNodes::SetNodeScreenSpacePos(currentNodeId - 1, click_pos);
@@ -524,3 +521,33 @@ std::string GetLoadFileName()
 std::string GetLoadFileName() { return "file.vision"; }
 std::string GetSaveFileName(std::string defaultFilename = "") { return "file.vision"; }
 #endif
+
+
+void loadFile(std::string fileName)
+{
+    for (auto n : nodes)
+        delete n;
+    nodes.clear();
+
+    mru.open(fileName);
+    std::ifstream ifile(fileName);
+    if (ifile.is_open() && !ifile.bad())
+    {
+        json data;
+        ifile >> data;
+        nodes = data.get<NodeList>();
+        ImNodes::LoadCurrentEditorStateFromIniFile((fileName + ".ini").c_str());
+
+        for (auto node : nodes)
+        {
+            currentNodeId = std::max(currentNodeId + 1, node->id + 1);
+            for (int i = 0; i < node->inputs; i++)
+                currentPinId = std::max(node->inputPins[i].id + 1, currentPinId);
+            for (int i = 0; i < node->outputs; i++)
+                currentPinId = std::max(node->outputPins[i].id + 1, currentPinId);
+
+        }
+        std::cout << "Current node id: " << currentNodeId << ", Current Pin Id: " << currentPinId << std::endl;
+    }
+    currentFileName = fileName;
+}

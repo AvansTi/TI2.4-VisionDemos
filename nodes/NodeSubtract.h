@@ -1,14 +1,15 @@
 #pragma once
 
 #include "Node.h"
+#include "../Image.h"
 
 class NodeSubtract : public Node
 {
 public:
     Image3 image;
 
-    uint8_t value1;
-    uint8_t value2;
+    uint8_t value1 = 0;
+    uint8_t value2 = 0;
 
     NodeSubtract(int id, int& currentPinId) : Node(NodeType::Subtract, id, 2, 4, currentPinId)
     {

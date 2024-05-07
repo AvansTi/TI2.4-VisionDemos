@@ -4,7 +4,6 @@
 
 #include <string>
 #include <opencv2/core.hpp>
-#include <GLFW/glfw3.h>
 #include "../Pin.h"
 #include <json.hpp>
 using json = nlohmann::json;
@@ -33,28 +32,13 @@ enum class NodeType
     DistanceTransform,
     Normalize,
     And,
+    GaussianBlur,
+    Contours,
 };
 
-
-
-class Image3
-{
-public:
-    cv::Mat mat;
-    GLuint texId;
-    bool threeComponent = true;
-    Image3();
-    void refresh();
-};
-
-class Image1
-{
-public:
-    cv::Mat mat;
-    GLuint texId;
-    Image1();
-    void refresh();
-};
+class Image;
+class Image3;
+class Image1;
 
 
 class Node

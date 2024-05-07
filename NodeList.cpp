@@ -40,7 +40,7 @@ void from_json(const json& j, NodeList& nodeList) {
 			nodeList.push_back(new NodeSubtract(n));
 		else if (n["type"] == (int)NodeType::InRange)
 			nodeList.push_back(new NodeInRange(n));
-		else if (n["type"] == (int)NodeType::InRange)
+		else if (n["type"] == (int)NodeType::DistanceTransform)
 			nodeList.push_back(new NodeDistanceTransform(n));
 		else if (n["type"] == (int)NodeType::Normalize)
 			nodeList.push_back(new NodeNormalize(n));
@@ -50,5 +50,11 @@ void from_json(const json& j, NodeList& nodeList) {
 			nodeList.push_back(new NodeMultiply(n));
 		else if (n["type"] == (int)NodeType::And)
 			nodeList.push_back(new NodeAnd(n));
+		else if (n["type"] == (int)NodeType::GaussianBlur)
+			nodeList.push_back(new NodeGaussianBlur(n));
+		else if (n["type"] == (int)NodeType::Canny)
+			nodeList.push_back(new NodeCanny(n));
+		else if (n["type"] == (int)NodeType::Contours)
+			nodeList.push_back(new NodeContours(n));
 	}
 }

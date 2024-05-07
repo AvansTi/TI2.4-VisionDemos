@@ -16,6 +16,7 @@ enum class PinType
 };
 
 
+class Image;
 
 class Pin
 {
@@ -26,7 +27,7 @@ public:
     //should be for input pin only
     int connection = 0;
     //should be for output pin only
-    void* data = nullptr;
+    Image* data = nullptr;
     //should be for output pin image1 only
     int image1Index = 0;
 };

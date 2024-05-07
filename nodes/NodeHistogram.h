@@ -3,6 +3,7 @@
 #include "Node.h"
 #include <opencv2/opencv.hpp>
 #include "../NodeList.h"
+#include "../Image.h"
 
 class NodeHistogram : public Node
 {

@@ -16,21 +16,10 @@ std::vector<ConvertMode> modes =
 {
     { cv::COLOR_BGR2HSV, "Rgb to Hsv"},
     { cv::COLOR_HSV2BGR, "Hsv to Rgb"},
+    { cv::COLOR_BGR2GRAY, "Rgb to grayscale"},
+    { cv::COLOR_GRAY2BGR, "Grayscale to rgb"},
 };
 
-
-cv::Mat NodeConvertColor::getPinImage1(int pinId) 
-{ 
-    cv::Mat planes[3];
-    cv::split(image.mat, planes);
-    if (pinId == outputPins[1].id) //red
-        return planes[0];
-    if (pinId == outputPins[2].id) //green
-        return planes[1];
-    if (pinId == outputPins[3].id) //blue
-        return planes[2];
-    return cv::Mat();
-}
 
 void NodeConvertColor::render()
 {
@@ -86,10 +75,15 @@ void NodeConvertColor::compute(const NodeList& nodes)
     cv::cvtColor(img1, image.mat, modes[convertMode].mode);
     image.refresh();
 
+    if (image.mat.channels() == 1)
+        outputPins[0].type = PinType::Image1;
+    else
+        outputPins[0].type = PinType::Image3;
 
 }
 
 void to_json(json& j, const NodeConvertColor& node)
 {
     j["threecomponent"] = node.image.threeComponent;
+    j["convertmode"] = node.convertMode;
 }

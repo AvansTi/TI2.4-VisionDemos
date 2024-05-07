@@ -114,6 +114,21 @@
     <ClCompile Include="nodes\NodeAnd.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
+    <ClCompile Include="MRU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeGaussianBlur.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeCanny.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\NodeContours.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui-docking\imgui.h">
@@ -216,6 +231,21 @@
       <Filter>nodes</Filter>
     </ClInclude>
     <ClInclude Include="nodes\NodeAnd.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="MRU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeGaussianBlur.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeCanny.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\NodeContours.h">
       <Filter>nodes</Filter>
     </ClInclude>
   </ItemGroup>

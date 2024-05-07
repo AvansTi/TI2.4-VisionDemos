@@ -8,7 +8,7 @@
 
 void NodeConvolve::render()
 {
-    renderBegin("Resize");
+    renderBegin("Convolute Filter");
 
     renderInput("Input", 0);
     ImGui::PushItemWidth(100);

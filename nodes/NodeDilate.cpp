@@ -50,6 +50,7 @@ void NodeDilate::compute(const NodeList& nodes)
     }
 
     cv::dilate(img, image.mat, cv::Mat(), anchor, iterations);
+
     image.refresh();
 
 }

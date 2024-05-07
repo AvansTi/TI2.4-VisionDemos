@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Node.h"
+#include "../Image.h"
 
 class NodeConvertColor : public Node
 {
@@ -15,10 +16,9 @@ public:
     }
     NodeConvertColor(json j) : Node(j) {
         image.threeComponent = j["threecomponent"];
+        j["convertmode"].get_to(convertMode);
         setImage3OutputPin(0, image, true);
     }
-    cv::Mat getPinImage3(int pinId) override { return image.mat; }
-    cv::Mat getPinImage1(int pinId) override;
     void render() override;
     void compute(const NodeList& nodes);
 };

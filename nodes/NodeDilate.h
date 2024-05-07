@@ -2,6 +2,7 @@
 
 #include "Node.h"
 #include <opencv2/opencv.hpp>
+#include "../Image.h"
 
 class NodeDilate : public Node
 {
@@ -12,7 +13,7 @@ public:
     cv::Mat kernel;
 
 
-    NodeDilate(int id, int& currentPinId) : Node(NodeType::Erode, id, 1, 4, currentPinId)
+    NodeDilate(int id, int& currentPinId) : Node(NodeType::Dilate, id, 1, 4, currentPinId)
     {
         inputPins[0].type = PinType::Image1;
         outputPins[0].type = PinType::Image1;

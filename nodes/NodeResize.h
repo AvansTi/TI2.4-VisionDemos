@@ -2,6 +2,7 @@
 
 #include "Node.h"
 #include <opencv2/opencv.hpp>
+#include "../Image.h"
 
 class NodeResize : public Node
 {
