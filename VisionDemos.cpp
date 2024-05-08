@@ -255,7 +255,10 @@ void draw()
                 for (const auto& fileName : mru.files)
                 {
                     if (ImGui::MenuItem(fileName.c_str()))
+                    {
                         loadFile(std::string(fileName));
+                        break; //mru.files changes here
+                    }
                 }
 
                 ImGui::EndMenu();

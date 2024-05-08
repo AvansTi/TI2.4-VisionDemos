@@ -31,13 +31,15 @@ void NodeContours::render()
 
 	renderInput("Image", 0);
 
-    ImGui::BeginListBox("##Contours");
-    for (int i = 0; i < contours.size(); i++)
+    if (ImGui::BeginListBox("##Contours"))
     {
-        if (ImGui::Selectable(("Contour " + std::to_string(i)).c_str(), selectedContour == i))
-            selectedContour = i;
+        for (int i = 0; i < contours.size(); i++)
+        {
+            if (ImGui::Selectable(("Contour " + std::to_string(i)).c_str(), selectedContour == i))
+                selectedContour = i;
+        }
+        ImGui::EndListBox();
     }
-    ImGui::EndListBox();
     ImGui::SameLine();
     ImGui::BeginChild(ImGui::GetID("sub"), ImVec2(200,300));
     if (contours.size() > 0 && selectedContour < contours.size())
