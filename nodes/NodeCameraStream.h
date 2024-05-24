@@ -12,6 +12,7 @@ public:
     int cameraId;
     NodeCameraStream(int id, int& currentPinId);
     NodeCameraStream(const json& j);
+    ~NodeCameraStream();
 
     void compute(const NodeList& nodes) override;
     void render() override;

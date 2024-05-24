@@ -1,5 +1,6 @@
 #include "MRU.h"
 #include <fstream>
+#include <algorithm>
 
 MRU::MRU()
 {

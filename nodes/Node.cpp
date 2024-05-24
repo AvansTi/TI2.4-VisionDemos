@@ -56,6 +56,12 @@ Node::Node(const json& j)
     }
 }
 
+Node::~Node()
+{
+    delete[] inputPins;
+    delete[] outputPins;
+}
+
 void Node::setImage3OutputPin(int index, Image3& image, bool fromJson)
 {
     if (index + 3 >= outputs)
