@@ -522,7 +522,7 @@ std::string GetLoadFileName()
 }
 #else
 std::string GetLoadFileName() { return "file.vision"; }
-std::string GetSaveFileName(std::string defaultFilename = "") { return "file.vision"; }
+std::string GetSaveFileName(std::string defaultFilename) { return "file.vision"; }
 #endif
 
 
