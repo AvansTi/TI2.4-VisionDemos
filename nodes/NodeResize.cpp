@@ -25,7 +25,7 @@ void NodeResize::render()
     renderInputFloat("Width%", -1, percX);
     renderInputFloat("Height%", -1, percY);
 
-    if (ImGui::Combo("Type", &interType, "Nearest\0Linear\0Cubic\0Area\0Lanczos4\0Linear Exact\nNearest Exact"))
+    if (ImGui::Combo("Type", &interType, "Nearest\0Linear\0Cubic\0Area\0Lanczos4\0Linear Exact\nNearest Exact\0"))
         computed = false;
 
     renderOutputImage("Image", 0, image);
