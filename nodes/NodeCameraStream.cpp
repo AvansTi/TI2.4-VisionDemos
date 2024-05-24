@@ -15,6 +15,13 @@ NodeCameraStream::NodeCameraStream(const json& j) : Node(j)
     cap = new cv::VideoCapture(cameraId);
     setImage3OutputPin(0, image, true);
 }
+
+NodeCameraStream::~NodeCameraStream()
+{
+    cap->release();
+    delete cap;
+}
+
 void to_json(json& j, const NodeCameraStream& node) {
     j["cameraId"] = node.cameraId;
     j["threecomponent"] = node.image.threeComponent;
