@@ -62,6 +62,7 @@ public:
     virtual cv::Mat getPinImage1(int pinId);;
     virtual int getPinInt(int pinId) { throw "oops"; };
 
+	virtual ~Node();
 protected:
     Node(const NodeType t, int id, int inputs, int outputs, int& currentPinId);
 

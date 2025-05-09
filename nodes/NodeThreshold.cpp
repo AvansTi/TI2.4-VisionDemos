@@ -25,7 +25,7 @@ void NodeThreshold::render()
     renderInputInt("Threshold", 1, threshold);
     renderInputInt("Max Value", 2, maxValue);
     
-    if (ImGui::Combo("Type", &thresholdType, "Binary\0Binary_Inv\0Trunc\0ToZero\0ToZero_Inv\0Mask\0Otsu\0Triangle"))
+    if (ImGui::Combo("Type", &thresholdType, "Binary\0Binary_Inv\0Trunc\0ToZero\0ToZero_Inv\0Mask\0Otsu\0Triangle\0"))
         computed = false;
 
 
