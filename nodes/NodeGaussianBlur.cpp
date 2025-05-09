@@ -42,6 +42,13 @@ void NodeGaussianBlur::compute(const NodeList& nodes)
         computeError = "Image not loaded";
         return;
     }
+
+    if (size % 2 == 0)
+    {
+        computeError = "size is even! not possible!";
+        return;
+    }
+
     if (img.cols != image.mat.cols || img.cols != image.mat.rows)
     {
         image.mat = cv::Mat(img.cols, img.rows, img.type());
